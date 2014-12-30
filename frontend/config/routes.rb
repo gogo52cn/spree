@@ -34,4 +34,18 @@ Spree::Core::Engine.add_routes do
   get '/content/cvv', :to => 'content#cvv', :as => :cvv
   get '/content/*path', :to => 'content#show', :as => :content
   get '/cart_link', :to => 'store#cart_link', :as => :cart_link
+  
+  devise_scope :user do
+    match "/users/auth/:provider",
+      constraints: { provider: /google|facebook/ },
+      to: "users/omniauth_callbacks#passthru",
+      as: :user_omniauth_authorize,
+      via: [:get, :post]
+    match "/users/auth/:action/callback",
+      constraints: { action: /google|facebook/ },
+      to: "users/omniauth_callbacks",
+      as: :user_omniauth_callback,
+      via: [:get, :post]
+  end
+  
 end
